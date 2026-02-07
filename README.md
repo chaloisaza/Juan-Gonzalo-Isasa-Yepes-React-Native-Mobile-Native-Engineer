@@ -1,4 +1,3 @@
-````markdown
 # ArrowFin Mobile Assessment
 
 1. **Install dependencies**
@@ -8,7 +7,6 @@
    # or
    yarn install
    ```
-````
 
 > **Note**: This project uses `patch-package` to automatically fix a known issue in `react-native-elements`. The patch is applied via a `postinstall` script.
 
@@ -82,7 +80,3 @@ If this application were to go into production with thousands of users and real 
 3.  **Unit Testing**:
     - Add tests for the `usePriceTicker` hook using _React Hooks Testing Library_.
     - Snapshots to ensure `MarketRow` does not change visually by mistake.
-
-```
-
-```
