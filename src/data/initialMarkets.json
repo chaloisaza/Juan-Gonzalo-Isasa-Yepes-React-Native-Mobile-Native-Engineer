@@ -1,0 +1,37 @@
+[
+  {
+    "id": "1",
+    "symbol": "ES",
+    "name": "E-Mini S&P 500",
+    "description": "Futures contract relating to the S&P 500 Index",
+    "lastPrice": 4150.25
+  },
+  {
+    "id": "2",
+    "symbol": "NQ",
+    "name": "E-Mini NASDAQ 100",
+    "description": "Futures contract relating to the NASDAQ 100 Index",
+    "lastPrice": 13200.50
+  },
+  {
+    "id": "3",
+    "symbol": "CL",
+    "name": "Crude Oil",
+    "description": "Futures contract for light sweet crude oil",
+    "lastPrice": 75.80
+  },
+  {
+    "id": "4",
+    "symbol": "GC",
+    "name": "Gold",
+    "description": "Futures contract for Gold",
+    "lastPrice": 1950.10
+  },
+  {
+    "id": "5",
+    "symbol": "SI",
+    "name": "Silver",
+    "description": "Futures contract for Silver",
+    "lastPrice": 24.30
+  }
+]

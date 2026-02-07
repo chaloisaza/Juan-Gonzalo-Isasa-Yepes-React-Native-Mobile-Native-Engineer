@@ -1,97 +1,88 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+````markdown
+# ArrowFin Mobile Assessment
 
-# Getting Started
+1. **Install dependencies**
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+````
 
-## Step 1: Start Metro
+> **Note**: This project uses `patch-package` to automatically fix a known issue in `react-native-elements`. The patch is applied via a `postinstall` script.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+2. **Install iOS Pods**
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+   ```bash
+   cd ios && pod install && cd ..
+   ```
 
-```sh
-# Using npm
-npm start
+3. **Run the App**
+   ```bash
+   npx react-native run-ios
+   # or
+   npx react-native run-android
+   ```
 
-# OR using Yarn
-yarn start
+## Architecture & Design Decisions
+
+### Clean Separation of Concerns
+
+The project structure separates logic, data, and UI:
+
+- `src/screens`: View controllers (MarketsList, MarketDetail).
+- `src/components`: Pure functional UI components (MarketRow, PriceDisplay).
+- `src/hooks`: Encapsulated business logic.
+- `src/types`: Shared TypeScript interfaces.
+
+### Memory Leaks Prevention
+
+Crucial for this assessment was ensuring no memory leaks occur during navigation.
+
+- **Solution**: The `usePriceTicker` hook implements a `useEffect` cleanup function that explicitly clears the `setInterval` when the component unmounts (navigation back) or when updates are paused.
+
+### Performance Optimizations (Current & Potential)
+
+- **Current**:
+  - **State Persistence**: Uses `React Context` to keep price updates in sync across screens without re-fetching.
+  - **Infinite Scroll**: Implemented pagination (load on scroll) to handle large datasets efficiently.
+  - **Background Handling**: `usePriceTicker` listens to `AppState` to pause CPU-intensive intervals when the app is minimized (background), saving battery and resources.
+  - `FlatList` for efficient list rendering.
+  - `useCallback` in hooks to prevent unnecessary re-creations of functions.
+
+### Technical Assumptions and Trade-offs
+
+In compliance with the evaluation requirements, the design decisions are detailed below:
+
+1.  **Static Data vs API**:
+
+    - _Assumption_: A static JSON array was requested.
+    - _Implementation_: `initialMarkets.json` was created as a base, but an asynchronous API (`fetchMarkets`) was simulated to demonstrate the ability to handle `Loading` states and real pagination, as expected in a production environment.
+
+2.  **Memory Management (Memory Leaks)**:
+
+    - _Requirement_: "Clearing setInterval is mandatory".
+    - _Solution_: The logic was abstracted into `usePriceTicker`. The `useEffect` explicitly returns `clearInterval`. It was verified that when navigating back, the timer terminates instantly.
+
+3.  **State Management**:
+
+    - _Decision_: Context API was used instead of `Redux` or `Zustand`.
+    - _Reasoning_: For an app of this size, Context is native, lightweight, and sufficient to avoid "prop drilling". It allows the list to maintain the updated price when returning from the detail screen.
+
+4.  **Error Handling**:
+    - _Future Improvement_: try/catch blocks were exists an asynchronous calls. Also, Implement "Error Boundaries" to catch UI crashes and display a user-friendly "Something went wrong" screen.
+
+## Future Improvements (Roadmap)
+
+If this application were to go into production with thousands of users and real data, I would implement:
+
+1.  **Shopify FlashList**: I would replace `FlatList` with `FlashList` for superior view recycling performance (5x faster) in lists with thousands of items.
+2.  **WebSockets**: Instead of `setInterval`, I would connect to a socket to receive real "tick-by-tick" prices.
+3.  **Unit Testing**:
+    - Add tests for the `usePriceTicker` hook using _React Hooks Testing Library_.
+    - Snapshots to ensure `MarketRow` does not change visually by mistake.
+
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
 ```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
